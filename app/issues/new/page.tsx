@@ -59,7 +59,6 @@ const NewIssuePage = () => {
             <SimpleMDE placeholder="Description" {...field} />
           )}
         />
-        <TextField.Root>{errors.description?.message}</TextField.Root>
         {errors.description && (
           <Text color="red" as="p">
             {errors.description.message}
