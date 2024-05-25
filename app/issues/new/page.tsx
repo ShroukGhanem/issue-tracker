@@ -1,6 +1,5 @@
 "use client";
 import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from "react-hook-form";
 import "easymde/dist/easymde.min.css";
 import axios from "axios";
@@ -11,6 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import dynamic from "next/dynamic";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -23,6 +23,7 @@ const NewIssuePage = () => {
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
+
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +36,10 @@ const NewIssuePage = () => {
       setIsSubmitting(false);
       setError("An unexpected error occured");
     }
+  });
+
+  const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+    ssr: false,
   });
 
   return (
