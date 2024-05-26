@@ -36,6 +36,7 @@ export async function DELETE(
   request: NextRequest,
   { params: { id } }: { params: { id: string } }
 ) {
+  console.log("issueid" + id);
   const issue = await prisma.issue.findUnique({
     where: {
       id: parseInt(id),
