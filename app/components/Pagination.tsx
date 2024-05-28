@@ -1,3 +1,4 @@
+"use client";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -5,6 +6,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { Button, Flex, Text } from "@radix-ui/themes";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   itemCount: number;
@@ -14,16 +16,36 @@ interface Props {
 
 const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
   const totalPages = Math.ceil(itemCount / pageSize);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const changePage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    router.push("?" + params.toString());
+  };
 
   return (
     <Flex align="center" gap="2">
       <Text size="2">
         Page {currentPage} of {totalPages}
       </Text>
-      <Button color="gray" variant="soft" size="1" disabled={currentPage === 1}>
+      <Button
+        color="gray"
+        variant="soft"
+        size="1"
+        disabled={currentPage === 1}
+        onClick={() => changePage(1)}
+      >
         <DoubleArrowLeftIcon />
       </Button>
-      <Button color="gray" variant="soft" size="1" disabled={currentPage === 1}>
+      <Button
+        color="gray"
+        variant="soft"
+        size="1"
+        disabled={currentPage === 1}
+        onClick={() => changePage(currentPage - 1)}
+      >
         <ChevronLeftIcon />
       </Button>
       <Button
@@ -31,6 +53,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
         variant="soft"
         size="1"
         disabled={currentPage === totalPages}
+        onClick={() => changePage(currentPage + 1)}
       >
         <ChevronRightIcon />
       </Button>
@@ -39,6 +62,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
         variant="soft"
         size="1"
         disabled={currentPage === totalPages}
+        onClick={() => changePage(totalPages)}
       >
         <DoubleArrowRightIcon />
       </Button>
