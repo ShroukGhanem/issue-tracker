@@ -13,7 +13,7 @@ const AssigneeSelect = () => {
     isLoading,
   } = useQuery<User[]>({
     queryKey: ["users"],
-    queryFn: () => axios.get("x/api/users").then((response) => response.data),
+    queryFn: () => axios.get("/api/users").then((response) => response.data),
     staleTime: 60 * 1000,
     retry: 3,
   });
