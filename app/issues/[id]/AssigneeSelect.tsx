@@ -1,23 +1,29 @@
 "use client";
+import { Skeleton } from "@/app/components";
 import { Issue, User } from "@prisma/client";
 import { Callout, Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Skeleton } from "@/app/components";
-import { BiErrorCircle } from "react-icons/bi";
 import toast, { Toaster } from "react-hot-toast";
+import { BiErrorCircle } from "react-icons/bi";
 
-const AssigneeSelect = ({ issue }: { issue: Issue }) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
+const useUser = () =>
+  useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => axios.get("/api/users").then((response) => response.data),
     staleTime: 60 * 1000,
     retry: 3,
   });
+
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
+  const assignIssue = (userId: String) =>
+    axios
+      .patch("/api/issues/" + issue.id, {
+        assignedToUserId: userId === "none" ? null : userId,
+      })
+      .catch(() => toast.error("Coult not save changes"));
+
+  const { data: users, error, isLoading } = useUser();
 
   if (isLoading) return <Skeleton />;
   if (error)
@@ -34,13 +40,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     <>
       <Select.Root
         defaultValue={issue.assignedToUserId || "none"}
-        onValueChange={(userId) =>
-          axios
-            .patch("/api/issues/" + issue.id, {
-              assignedToUserId: userId === "none" ? null : userId,
-            })
-            .catch(() => toast.error("Coult not save changes"))
-        }
+        onValueChange={assignIssue}
       >
         <Select.Trigger placeholder="Assign..."></Select.Trigger>
         <Select.Content>
