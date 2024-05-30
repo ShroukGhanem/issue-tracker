@@ -15,13 +15,23 @@ const useUser = () =>
     retry: 3,
   });
 
-const AssigneeSelect = ({ issue }: { issue: Issue }) => {
-  const assignIssue = (userId: String) =>
+interface Props {
+  issue: Issue;
+  onUpdate: () => void;
+}
+
+const AssigneeSelect = ({ issue, onUpdate }: Props) => {
+  const assignIssue = (userId: String) => {
     axios
       .patch("/api/issues/" + issue.id, {
         assignedToUserId: userId === "none" ? null : userId,
+        status: userId === "none" ? issue.status : "IN_PROGRESS",
       })
       .catch(() => toast.error("Coult not save changes"));
+    if (userId !== "none") {
+      onUpdate();
+    }
+  };
 
   const { data: users, error, isLoading } = useUser();
 

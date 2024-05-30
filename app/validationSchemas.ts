@@ -20,4 +20,6 @@ export const patchIssueSchema = z.object({
     .max(255)
     .nullable()
     .optional(),
+
+  status: z.enum(["OPEN", "IN_PROGRESS", "CLOSED"]).optional(),
 });

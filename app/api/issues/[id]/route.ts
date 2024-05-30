@@ -16,7 +16,7 @@ export async function PATCH(
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
 
-  const { title, description, assignedToUserId } = body;
+  const { title, description, assignedToUserId, status } = body;
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({
       where: {
@@ -44,6 +44,7 @@ export async function PATCH(
       title,
       description,
       assignedToUserId,
+      status,
     },
   });
 
@@ -73,4 +74,23 @@ export async function DELETE(
   });
 
   return NextResponse.json({});
+}
+
+export async function GET(
+  request: NextRequest,
+  { params: { id } }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  if (!issue)
+    return NextResponse.json({ error: "Invalid issue" }, { status: 404 });
+
+  return NextResponse.json(issue);
 }

@@ -8,6 +8,7 @@ import DeleteIssueButton from "./DeleteIssueButton";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 import { cache } from "react";
+import IssueDetailsContainer from "./IssueDetailsContainer";
 
 interface Props {
   params: {
@@ -28,20 +29,10 @@ const IssueDetailsPage = async ({ params: { id } }: Props) => {
   const session = await getServerSession(authOptions);
 
   return (
-    <Grid columns={{ initial: "1", sm: "5" }} gap="5">
-      <Box className="md:col-span-4">
-        <IssueDetails issue={issue} />
-      </Box>
-      {session && (
-        <Box>
-          <Flex direction="column" gap="4">
-            <AssigneeSelect issue={issue} />
-            <EditIssueButton issueId={issue.id} />
-            <DeleteIssueButton issueId={issue.id} />
-          </Flex>
-        </Box>
-      )}
-    </Grid>
+    <IssueDetailsContainer
+      issue={issue}
+      userValidated={session ? true : false}
+    />
   );
 };
 
